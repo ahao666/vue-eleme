@@ -6,8 +6,10 @@
       <div class="tab-item"><router-link to="/ratings" >评论</router-link></div>
       <div class="tab-item"><router-link to="/seller" >商家</router-link></div>
     </div>
-    <div class="content">
-      <router-view></router-view>
+    <div class="content clearfix">
+      <keep-alive>
+        <router-view></router-view>
+      </keep-alive>
     </div>
 
   </div>
@@ -23,16 +25,16 @@ export default {
   },
   data() {
     return {
-      seller: {}  // 接收ajax请求过来的数据
+      seller: {},  // 接收ajax请求过来的数据   ---- seller 数据;
+      allData: {}  // 接收ajax请求过来的数据   ---- 所有数据;
     }
   },
   created() {
-    console.log(this)
     this.$axios.post('http://result.eolinker.com/ryfVuuNe56d9619232220f51d7a2f231f3df0a6a54029bf?uri=vue-ele')
     .then((response)=> {
-      console.log(response);
       this.seller = response.data.seller;
-
+      this.allData = response.data;
+      console.log(this.allData);
     }).catch((err)=> {
       console.log(err);
     })
@@ -43,6 +45,9 @@ export default {
 </script>
 
 <style lang="scss">
+
+  @import "./scss/base.scss";
+
   #app {
     .tab {
       display: flex;

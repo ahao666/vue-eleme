@@ -1,0 +1,10 @@
+.clearfix {
+    zoom: 1;
+    &::after {
+        content: "";
+        clear: both;
+        display: inline-block;
+        visibility: hidden;
+        height: 0;
+    }
+}
