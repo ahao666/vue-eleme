@@ -31,13 +31,16 @@
                                     <span class="now">¥{{food.price}}</span>
                                     <span class="old" v-show="food.oldPrice">¥{{food.oldPrice}}</span>
                                 </div>
+                                <div class="cartcontrol-wrapper">
+                                    <cartcontrol @add="_drop" :food="food"></cartcontrol>
+                                </div>
                             </div>
                         </li>
                     </ul>
                 </li>
             </ul>
         </div>
-        
+        <Shopcart ref="shopcart" :selectFood="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></Shopcart>
     </div>
 </template>
 
@@ -45,18 +48,21 @@
 
     import BScroll from 'better-scroll';
 
+    import Shopcart from '../Shopcart/shopcart.vue';
+    import cartcontrol from '../cartcontrol/cartcontrol.vue';
+
     export default {
-        props: {
-            seller: {
-                type: Object
-            }
-        },
         data() {
             return {
+                seller: {},
                 goods: [],
                 listHeight: [], // 高度 数组
                 scrollY: 0, // 跟踪 scrollY
             }
+        },
+        components: {
+            Shopcart,
+            cartcontrol
         },
         computed: {
             currentIndex() {
@@ -70,9 +76,29 @@
                 return 0;
             },
 
+            selectFoods() {
+                let foods = [];
+                this.goods.forEach((good,index)=> {
+                    good.foods.forEach((food,index)=> {
+                        if(food.count) {
+                            foods.push(food);
+                        }
+                    });
+                });
+                return foods;
+            }
+
         },
 
         methods: {
+
+            // 接收事件
+            _drop(target) {
+               this.$nextTick(() => {
+                    this.$refs.shopcart.drop(target);  // 又给shopcart组件派发事件
+                });
+            },
+            
             selectMenu(index,event) {
                 if(event.__constructed) {
                     return;
@@ -80,9 +106,7 @@
                 let foodList = this.$refs.foodsWrapper.getElementsByClassName("food-list-hook");
                 let el = foodList[index];
                 console.log(el);
-
                 this.foodScroll.scrollToElement(el,300);
-
 
             },
 
@@ -93,6 +117,7 @@
                 });
                 this.foodScroll = new BScroll(this.$refs.foodsWrapper,{
                     // 看官网！！ 有时候我们需要知道滚动的位置。当 probeType 为 1 的时候，会非实时（屏幕滑动超过一定时间后）派发scroll 事件；当 probeType 为 2 的时候，会在屏幕滑动的过程中实时的派发 scroll 事件；当 probeType 为 3 的时候，不仅在屏幕滑动的过程中，而且在 momentum 滚动动画运行过程中实时派发 scroll 事件。如果没有设置该值，其默认值为 0，即不派发 scroll 事件。
+                    click: true,
                     probeType: 3                    
                 });
 
@@ -125,9 +150,17 @@
         },
 
         created() {
+            // this.$root.$on('add',(event) => {
+            //     console.log(event);
+            // })
+            this.$nextTick(() => { 
+                console.log(this.$refs.shopcart.$emit('add'));
+            })
+            
 
             this.$axios.post('http://result.eolinker.com/ryfVuuNe56d9619232220f51d7a2f231f3df0a6a54029bf?uri=vue-ele')
             .then((response)=> {
+                this.seller = response.data.seller;
                 this.goods = response.data.goods;
                 this.$nextTick(() => {
                     this._initScroll();
@@ -139,6 +172,9 @@
             
 
             this.classMap = ['decrease','discount','guarantee','invoice','special'];
+        },
+        updated() {
+          
         },
 
     }
@@ -235,6 +271,7 @@
                     margin-right: 0.38rem;
                 }
                 .content {
+                    position: relative;
                     flex: 1;
                     .name {
                         margin: 2px 0 8px 0;
@@ -270,6 +307,11 @@
                             font-size: 10px;
                             color: rgba(147,153,159,1);
                         }
+                    }
+                    .cartcontrol-wrapper {
+                        position: absolute;
+                        right: 0;
+                        bottom: -0.25rem;
                     }
                     
                 }

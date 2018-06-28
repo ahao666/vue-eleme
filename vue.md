@@ -62,3 +62,91 @@
 
 
 ## $nextTick()
+
+
+## Vue.set();
+
+
+
+## 实例属性：
+	
+	$props:  当前组件接收到的 props 对象。Vue 实例代理了对其 props 对象属性的访问。
+
+![](https://i.imgur.com/3WQYfJV.png)
+
+
+
+## transition-group 
+	
+	<transition-group> 元素作为多个元素/组件的过渡效果。<transition-group> 渲染一个真实的 DOM 元素。默认渲染 
+	<span>，可以通过 tag 属性配置哪个元素应该被渲染。
+
+	注意，每个 <transition-group> 的子节点必须有 独立的 key ，动画才能正常工作
+
+
+
+
+## 父子组件接收派发事件
+
+	父组件接收子组件事件
+	 
+
+	child1.vue   $emit(事件名,方法)
+	
+			addCart(event) {
+                if(event.__constructed) {
+                    return;
+                }
+                if(!this.food.count) {
+                    // 全局设置 this.food对象 添加 count 属性 默认值为1;
+                    Vue.set(this.food,'count',1);
+                }else {
+                    this.food.count ++;
+                }
+
+                this.$emit('add',event.target);  !!! 主要是 这一行
+            },
+
+
+	parent.vue 
+
+		<template>
+			// @add="_drop" add是子组件定义的  _drop则是父组件定义的方法用来接收
+			<child1 @add="_drop"></child>  
+
+			<child2 ref="child2"></child2>
+		</template>
+
+		<script>
+			method: { 
+				_drop(target) {   // 接收
+	               this.$nextTick(() => {
+	                    this.$refs.child2.drop(target)  // 又派发给 child2
+	                });
+            	},
+				
+			}
+		</script>
+
+	
+	child2.vue 
+
+	<script>
+		methods: {
+			drop(target) {   // 接收
+				console.log(target);
+			}
+		}
+	</script>
+
+
+
+## getBoundingClientRect
+
+
+
+
+## better-scroll 
+	
+
+	refresh();  // 重新计算 better-scroll，当 DOM 结构发生变化的时候务必要调用确保滚动的效果正常。
