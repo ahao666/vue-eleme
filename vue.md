@@ -140,6 +140,14 @@
 	</script>
 
 
+## 父组件 使用 子组件方法 
+
+	
+	parent.vue 
+	
+	this.$refs.child.show();
+
+
 
 ## getBoundingClientRect
 

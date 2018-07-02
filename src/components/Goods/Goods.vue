@@ -16,7 +16,7 @@
                 <li v-for="(item,key) in goods" :key="key" class="food-list-hook">
                     <h1 class="title">{{item.name}}</h1>
                     <ul >
-                        <li v-for="(food,key) in item.foods" :key="key" class="food-item">
+                        <li @click="selectFood(food,$event)" v-for="(food,key) in item.foods" :key="key" class="food-item">
                             <div class="icon">
                                 <img :src="food.icon" width="100%" height="100%">
                             </div>
@@ -41,6 +41,7 @@
             </ul>
         </div>
         <Shopcart ref="shopcart" :selectFood="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></Shopcart>
+        <food ref="food" :food="selectedFood" ></food>
     </div>
 </template>
 
@@ -50,6 +51,7 @@
 
     import Shopcart from '../Shopcart/shopcart.vue';
     import cartcontrol from '../cartcontrol/cartcontrol.vue';
+    import food from '../food/food.vue';
 
     export default {
         data() {
@@ -58,11 +60,13 @@
                 goods: [],
                 listHeight: [], // 高度 数组
                 scrollY: 0, // 跟踪 scrollY
+                selectedFood: {}
             }
         },
         components: {
             Shopcart,
-            cartcontrol
+            cartcontrol,
+            food
         },
         computed: {
             currentIndex() {
@@ -129,7 +133,6 @@
                 })
             },
 
-
             // 计算高度
             _calculateHeight() {
 
@@ -145,6 +148,15 @@
                     height += item.clientHeight;
                     this.listHeight.push(height);
                 }
+            },
+            
+            selectFood(food,event) {
+                if(event.__constructed) {
+                    return;
+                }
+                console.log(food);
+                this.selectedFood = food;
+                this.$refs.food.show();
             }
 
         },
