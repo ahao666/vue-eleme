@@ -170,7 +170,7 @@
             })
             
 
-            this.$axios.post('http://result.eolinker.com/ryfVuuNe56d9619232220f51d7a2f231f3df0a6a54029bf?uri=vue-ele')
+            this.$axios.post('https://result.eolinker.com/ryfVuuNe56d9619232220f51d7a2f231f3df0a6a54029bf?uri=vue-ele')
             .then((response)=> {
                 this.seller = response.data.seller;
                 this.goods = response.data.goods;
