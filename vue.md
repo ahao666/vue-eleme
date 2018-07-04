@@ -158,3 +158,15 @@
 	
 
 	refresh();  // 重新计算 better-scroll，当 DOM 结构发生变化的时候务必要调用确保滚动的效果正常。
+
+
+## 关于run build 路径问题
+
+	找到config文件下的index.js文件 修改
+		build: {
+			 assetsPublicPath: '/',   
+		}
+		修改为: 
+		build: {
+			 assetsPublicPath: './',   
+		}

@@ -8,7 +8,7 @@
     </div>
     <div class="content clearfix">
       <keep-alive>
-        <router-view></router-view>
+        <router-view :seller="seller"></router-view>
       </keep-alive>
     </div>
 
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import {urlParse} from '../static/util.js';
 import Header from './components/Header/Header';
 
 export default {
@@ -25,12 +26,20 @@ export default {
   },
   data() {
     return {
-      seller: {},  // 接收ajax请求过来的数据   ---- seller 数据;
+      seller: {
+        id: (()=>{
+          let queryParam = urlParse();
+          console.log(queryParam);
+          return queryParam.id
+        })()
+      },  // 接收ajax请求过来的数据   ---- seller 数据;
       allData: {}  // 接收ajax请求过来的数据   ---- 所有数据;
     }
   },
   created() {
-    this.$axios.post('http://result.eolinker.com/ryfVuuNe56d9619232220f51d7a2f231f3df0a6a54029bf?uri=vue-ele')
+    this.$axios.post('http://result.eolinker.com/ryfVuuNe56d9619232220f51d7a2f231f3df0a6a54029bf?uri=vue-ele',{
+      id: this.seller.id
+    })
     .then((response)=> {
       this.seller = response.data.seller;
       this.allData = response.data;

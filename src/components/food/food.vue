@@ -71,11 +71,7 @@
                         <div class="no-rating" v-show="!food.ratings || !food.ratings.length"></div>
 
                     </div>
-
-
                 </div>
-
-
                
             </div>
         </div>
